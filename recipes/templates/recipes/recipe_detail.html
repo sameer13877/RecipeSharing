@@ -1,0 +1,32 @@
+<!-- templates/recipes/recipe_detail.html -->
+{% extends 'base.html' %}
+
+{% block title %}{{ recipe.title }}{% endblock %}
+
+{% block content %}
+    <h2>{{ recipe.title }}</h2>
+    <p>By: {{ recipe.author.username }}</p>
+    <p><strong>Ingredients:</strong> {{ recipe.ingredients }}</p>
+    <p><strong>Instructions:</strong> {{ recipe.instructions }}</p>
+    <p><strong>Category:</strong> {{ recipe.category }}</p>
+    <p><strong>Cooking Time:</strong> {{ recipe.cooking_time }} minutes</p>
+
+    <p><strong>Average Rating:</strong> {{ avg_rating }}</p>
+
+    <h3>Comments</h3>
+    <ul>
+        {% for comment in comments %}
+            <li>{{ comment.user.username }}: {{ comment.text }}</li>
+        {% endfor %}
+    </ul>
+
+    <h3>Add a Comment</h3>
+    <form method="POST">
+        {% csrf_token %}
+        {{ comment_form.as_p }}
+        <button type="submit">Submit</button>
+    </form>
+
+    <br>
+    <a href="{% url 'recipe_list' %}">Back to Recipes</a>
+{% endblock %}

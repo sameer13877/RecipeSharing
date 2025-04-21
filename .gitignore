@@ -1,0 +1,23 @@
+# Virtual environment (contains many files)
+venv/
+env/
+
+# Database files (can get very large)
+*.sqlite3
+db.sqlite3
+
+# Compiled Python files (unnecessary and can accumulate)
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Media and static files (can contain large uploads)
+media/
+static/
+
+# Node modules (if using frontend, very large)
+node_modules/
+
+# Logs (can grow over time)
+*.log

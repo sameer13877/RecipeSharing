@@ -1,0 +1,44 @@
+<!-- templates/recipes/recipe_list.html -->
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Recipe List</h1>
+
+    <!-- Recipe Search Form -->
+    <form method="get" action="{% url 'recipe_list' %}">
+        <input type="text" name="q" placeholder="Search Recipes" value="{{ request.GET.q }}">
+        <button type="submit">Search</button>
+    </form>
+
+    <!-- Display Recipes -->
+    {% if recipes %}
+        <div class="recipe-list">
+            {% for recipe in recipes %}
+                <div class="recipe-item">
+                    <h3><a href="{% url 'recipe_detail' recipe.id %}">{{ recipe.title }}</a></h3>
+                    <p>{{ recipe.ingredients|truncatewords:20 }}</p>
+                    <p>Category: {{ recipe.category }}</p>
+                    <p>Cooking Time: {{ recipe.cooking_time }} mins</p>
+                    <p>By: {{ recipe.author.username }}</p>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination">
+            {% if recipes.has_previous %}
+                <a href="?page=1&q={{ request.GET.q }}">First</a>
+                <a href="?page={{ recipes.previous_page_number }}&q={{ request.GET.q }}">Previous</a>
+            {% endif %}
+            
+            <span>Page {{ recipes.number }} of {{ recipes.paginator.num_pages }}</span>
+            
+            {% if recipes.has_next %}
+                <a href="?page={{ recipes.next_page_number }}&q={{ request.GET.q }}">Next</a>
+                <a href="?page={{ recipes.paginator.num_pages }}&q={{ request.GET.q }}">Last</a>
+            {% endif %}
+        </div>
+    {% else %}
+        <p>No recipes found.</p>
+    {% endif %}
+{% endblock %}
