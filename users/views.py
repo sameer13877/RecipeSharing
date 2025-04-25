@@ -1,54 +1,36 @@
-# users/views.py
-from django.shortcuts import render, redirect
-from django.contrib.auth import login, authenticate, logout
-from django.views.generic import View, TemplateView
-from django.views.generic.edit import CreateView, UpdateView
-from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth.mixins import LoginRequiredMixin
-from .forms import UserRegistrationForm, UserProfileUpdateForm
-from django.urls import reverse_lazy
 from django.contrib.auth.models import User
+from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated
+from .serializers import UserSerialzer
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status, permissions
+from django.contrib.auth import authenticate
+from rest_framework_simplejwt.tokens import RefreshToken
 
-# User Registration View
-class UserRegisterView(CreateView):
-    template_name = 'users/register.html'
-    form_class = UserRegistrationForm
-    success_url = reverse_lazy('login')
+class UserViewset(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerialzer
+    permission_classes = [IsAuthenticated]
 
-    def form_valid(self, form):
-        user = form.save()
-        login(self.request, user)
-        return redirect('home')
 
-# User Login View
-class UserLoginView(View):
-    def get(self, request):
-        form = AuthenticationForm()
-        return render(request, 'users/login.html', {'form': form})
+
+class SuperAdminLoginView(APIView):
+    def post(self, request):
+        username = request.data.get("username")
+        password = request.data.get("password")
+        user = authenticate(username=username,password=password)
+
+
+        if user and user.is_superuser:
+            refresh = RefreshToken.for_user(user)
+            return Response({"refresh": str(refresh),"access":str(refresh.access_token)})
+        return Response({"Error": "Invalid credenials or not superuser"},status=400)
+
+class SuperUerLogoutView(APIView):
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        form = AuthenticationForm(request, data=request.POST)
-        if form.is_valid():
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password']
-            user = authenticate(request, username=username, password=password)
-            if user is not None:
-                login(request, user)
-                return redirect('home')
-        return render(request, 'users/login.html', {'form': form})
-
-# User Logout View
-class UserLogoutView(View):
-    def get(self, request):
-        logout(request)
-        return redirect('login')
-
-# User Profile Update View
-class UserProfileUpdateView(LoginRequiredMixin, UpdateView):
-    template_name = 'users/profile.html'
-    form_class = UserProfileUpdateForm
-    model = User
-    success_url = reverse_lazy('home')
-
-    def get_object(self):
-        return self.request.user
+        request.auth.delete()
+        return Response({"Message": "Successfully logged out"})
+    

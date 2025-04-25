@@ -1,10 +1,14 @@
-# users/urls.py
-from django.urls import path
-from .views import UserRegisterView, UserLoginView, UserLogoutView, UserProfileUpdateView
+from rest_framework.routers import DefaultRouter
+from .views import UserViewset, SuperAdminLoginView,SuperUerLogoutView
+from django.urls import path, include
+
+
+router = DefaultRouter()
+router.register(r'users', UserViewset)
 
 urlpatterns = [
-    path('register/', UserRegisterView.as_view(), name='register'),
-    path('login/', UserLoginView.as_view(), name='login'),
-    path('logout/', UserLogoutView.as_view(), name='logout'),
-    path('profile/', UserProfileUpdateView.as_view(), name='profile'),
+    path('', include(router.urls)),
+    path('login/', SuperAdminLoginView.as_view(),name = "superuser-login"),
+    path('logout/',SuperUerLogoutView.as_view(),name = "superuser-logout"),
+
 ]

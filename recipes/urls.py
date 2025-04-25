@@ -1,10 +1,18 @@
 # recipes/urls.py
 from django.urls import path
-from .views import RecipeListView, RecipeDetailView, RecipeCreateView, RecipeUpdateView
+from .views import (
+    RecipeListAPIView, 
+    RecipeDetailAPIView, 
+    RatingCreateAPIView,
+    CommentCreateAPIView, 
+    RecipeCollectionCreateAPIView)
+from .views import hello_world
 
 urlpatterns = [
-    path('', RecipeListView.as_view(), name='recipe_list'),
-    path('recipe/<int:pk>/', RecipeDetailView.as_view(), name='recipe_detail'),
-    path('recipes/create/', RecipeCreateView.as_view(), name='create_recipe'),
-    path('recipes/<int:pk>/update/', RecipeUpdateView.as_view(), name='update_recipe'),
+    path("recipes/", RecipeListAPIView.as_view(), name="recipe-list"),
+    path("recipes/<int:pk>/", RecipeDetailAPIView.as_view(), name="recipe-detail"),
+    path("recipes/<int:pk>/rate/", RatingCreateAPIView.as_view(), name="rate-recipe"),
+    path("recipes/<int:pk>/comment/", CommentCreateAPIView.as_view(), name="comment-recipe"),
+    path("recipe-collections/create/", RecipeCollectionCreateAPIView.as_view(), name="create-recipe-collection"),
+    path("hello/", hello_world, name="hello-world"),
 ]

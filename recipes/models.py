@@ -6,7 +6,7 @@ class Recipe(models.Model):
     title = models.CharField(max_length=200)
     ingredients = models.TextField()
     instructions = models.TextField()
-    category = models.CharField(max_length=50)
+    category = models.CharField(max_length=50, choices=(("Breakfast","Breakfast"),("Lunch","Lunch"),("Dinner","Dinner")))
     cooking_time = models.PositiveIntegerField()
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='recipes')
     created_at = models.DateTimeField(auto_now_add=True)

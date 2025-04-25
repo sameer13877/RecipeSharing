@@ -1,0 +1,21 @@
+superuser:
+
+username : sameer
+email: sameer@neosoft.com
+password: neosoft@13877
+
+----------------------------------------------------------------
+user1 
+tony
+ironman@neosoft
+
+------------------------------
+thor 
+thor@neosoft
+------------------------------
+steve
+steve@neosoft
+------------------------------
+strange
+strange@neosoft
+=======================================
